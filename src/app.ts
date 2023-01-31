@@ -1,10 +1,21 @@
-let username = 'Steve';
-console.log(username)
+// Data types
+let myName: string = 'Steve'
+let meaningOfLife : number;
+let isloading : boolean;
+let album: any;
 
-let a: number = 12
-let b: number = 6
-let c: number = 2
+myName = 'John'
+meaningOfLife = 43
+isloading = true
+album = 2020
 
-console.log(a / b)
+const sum = (a: number, b: string) => {
+   return a + b 
+}
 
-console.log(c * b)
+let postId: string | number
+let isActive: number | boolean
+
+RegExp   //RegExp - regular expression (used when converting to typescript)
+
+let re: RegExp = /\w+/g
