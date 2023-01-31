@@ -1,11 +1,10 @@
-import express, { Application, Request, Response, NextFunction } from 'express';
+let username = 'Steve';
+console.log(username)
 
-const app: Application = express();
-const add = (a: number, b: number): number => a + b;
+let a: number = 12
+let b: number = 6
+let c: number = 2
 
-app.get('/', (req: Request, res: Response, next: NextFunction) =>{
-   console.log(add(5, 6))
-   res.send('Hello World!');
-});
+console.log(a / b)
 
-app.listen(500, () => console.log('Server running'));
+console.log(c * b)
