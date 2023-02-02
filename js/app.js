@@ -1,70 +1,25 @@
 "use strict";
-//type Aliases:  Here the type of values is represented by an alias which can be used to denote the type whenever we want to use it.
-// Object.defineProperty(exports, "__esModule", { value: true });
-//interface postId = stringOrNumber  // Interface doesn't work with type Aliases.
-// Literal types
-let userName;
-userName = 'Amy'; //Using any other username other than (Dave, John or Amy) will flag error because they have been declared literally so it puts it in a limit of only what is declared.
-//Functions: the type of input of function can also be specified including that of the expected return value
-const add = (a, b) => {
-    return a + b;
+Object.defineProperty(exports, "__esModule", { value: true });
+//Convert to more or less specific
+let a = 'hello';
+let b = a; //Less specific type
+let c = a; // more specific
+//typescript also uses angle brackets to assign a defined type
+let d = 'World'; //note that angle brackets (<>) can not be used with tsx files in react. 
+let e = 'World';
+const addOrConcat = (a, b, c) => {
+    if (c === 'add')
+        return a + b;
+    return '' + a + b;
 };
-const logMsg = (message) => {
-    console.log(message);
-};
-logMsg('Hello!');
-logMsg(add(2, 3));
-// logMsg(add('a',3))
-let subtract = function (c, d) {
-    return c - d;
-};
-// interface mathFunction {
-//    (a: number, b: number):number
-// }
-let multiply = function (c, d) {
-    return c * d;
-};
-logMsg(multiply(2, 2));
-const addAll = (a, b, c) => {
-    if (typeof c !== 'undefined') {
-        return a + b + c;
-    }
-    return a + b;
-};
-// default param value
-const sumAll = (a = 10, b, c = 2) => {
-    return a + b + c;
-};
-logMsg(addAll(2, 3, 2));
-logMsg(addAll(2, 3));
-logMsg(sumAll(2, 3));
-logMsg(sumAll(undefined, 3)); //Note that default value will not work with type Alias like we did with mathFunction 
-// Rest Parameter
-const total = (...nums) => {
-    return nums.reduce((prev, curr) => prev + curr);
-};
-logMsg(total(10, 2, 3));
-const createError = (errMsg) => {
-    throw new Error(errMsg);
-};
-const infinite = () => {
-    let i = 1;
-    while (true) {
-        i++;
-        if (i > 100)
-            break;
-    }
-};
-//Custom type guard
-const isNumber = (value) => {
-    return typeof value === 'number'
-        ? true : false;
-};
-// Use of never type
-const numberOrString = (value) => {
-    if (typeof value === 'string')
-        return 'string';
-    if (isNumber(value))
-        return 'number';
-    return createError('This should never happen!');
-};
+let myVal = addOrConcat(2, 3, 'concat');
+// Be careful! TS sees no problem  - but a string is returned
+let nextVal = addOrConcat(2, 2, 'concat');
+// 10 as string
+10;
+//The DOM
+const img = document.querySelector('img');
+const myImg = document.getElementById('#img'); // The ! is a non-null asserrtion that can be used to tell typescript that this is not null
+const nextImg = document.getElementById('#img');
+img.src;
+myImg.src;

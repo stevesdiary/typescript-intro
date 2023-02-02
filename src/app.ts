@@ -1,97 +1,37 @@
-//type Aliases:  Here the type of values is represented by an alias which can be used to denote the type whenever we want to use it.
+import { type } from "os";
 
-import { type } from "os"
+type One = string
+type Two = string | number
+type Three = 'Hello'
 
-type stringOrNumber = string | number
+//Convert to more or less specific
 
-type stringOrNumberArray = (string | number)[]
-type Guitarists = {
-   name?: string,
-   active: boolean,
-   albums: stringOrNumberArray
-}
-type UserId = stringOrNumber
+let a: One = 'hello' 
+let b = a as Two //Less specific type
+let c = a as Three // more specific
+//typescript also uses angle brackets to assign a defined type
 
-//interface postId = stringOrNumber  // Interface doesn't work with type Aliases.
+let d = <One>'World'  //note that angle brackets (<>) can not be used with tsx files in react. 
+let e = <string | number>'World' 
 
-
-// Literal types
-
-let userName: 'Dave' | 'John' | 'Amy'
-userName = 'Amy'  //Using any other username other than (Dave, John or Amy) will flag error because they have been declared literally so it puts it in a limit of only what is declared.
-
-
-//Functions: the type of input of function can also be specified including that of the expected return value
-const add = (a: number, b: number): number => {
-   return  a + b
+const addOrConcat = (a: number, b: number, c: 'add' | 'concat'): number | string => {
+   if (c === 'add') return a + b
+   return '' + a + b
 }
 
-const logMsg = (message: any): void => {
-   console.log(message)
-}
+let myVal: string = addOrConcat(2,3,'concat') as string
 
-logMsg('Hello!')
-logMsg(add(2,3))
-// logMsg(add('a',3))
+// Be careful! TS sees no problem  - but a string is returned
+let nextVal: number = addOrConcat(2,2,'concat') as number
 
-let subtract = function (c: number, d: number):
-number {
-   return c - d
-}
+// 10 as string
+(10 as unknown) as string
 
-type mathFunction = (a: number, b: number) => number
-// interface mathFunction {
-//    (a: number, b: number):number
-// }
-let multiply: mathFunction = function (c, d) {
-   return c * d 
-}
-logMsg(multiply(2,2))
+//The DOM
 
-const addAll = (a: number, b:number, c?: number): number => {
-   if( typeof c !== 'undefined') {
-      return a + b + c
-   }
-   return a + b
-}
-// default param value
-const sumAll = (a: number=10, b: number, c: number = 2): number => {
-   return a + b + c
-} 
-logMsg(addAll(2, 3, 2))
-logMsg(addAll(2, 3))
-logMsg(sumAll(2, 3 ))
-logMsg(sumAll(undefined, 3))  //Note that default value will not work with type Alias like we did with mathFunction 
+const img = document.querySelector('img')!
 
-// Rest Parameter
-
-const total = (...nums: number[]): number =>{
-   return nums.reduce((prev, curr)=> prev + curr)
-}
-
-logMsg(total(10, 2, 3))
-
-
-const createError = (errMsg: string): never => {
-   throw new Error(errMsg)
-}
-
-const infinite = () => {
-   let i: number = 1
-   while (true) {
-      i++
-      if ( i > 100) break
-   }
-} 
-//Custom type guard
-const isNumber = (value: any): boolean => {
-   return typeof value === 'number'
-   ? true : false
-}
-
-// Use of never type
-const numberOrString = (value: number | string): string => {
-   if (typeof value === 'string') return 'string'
-   if (isNumber(value)) return 'number'
-   return createError('This should never happen!')
-}
+const myImg = document.getElementById('#img') as HTMLImageElement   // The ! is a non-null asserrtion that can be used to tell typescript that this is not null
+const nextImg = document.getElementById('#img')
+img.src
+myImg.src 
