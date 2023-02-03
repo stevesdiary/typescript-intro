@@ -1,37 +1,119 @@
-import { type } from "os";
+//Typescript Classes
+class Coder {
+   //Visibility members or visibility modifiers (public, readonly, private, protected etc.)
 
-type One = string
-type Two = string | number
-type Three = 'Hello'
-
-//Convert to more or less specific
-
-let a: One = 'hello' 
-let b = a as Two //Less specific type
-let c = a as Three // more specific
-//typescript also uses angle brackets to assign a defined type
-
-let d = <One>'World'  //note that angle brackets (<>) can not be used with tsx files in react. 
-let e = <string | number>'World' 
-
-const addOrConcat = (a: number, b: number, c: 'add' | 'concat'): number | string => {
-   if (c === 'add') return a + b
-   return '' + a + b
+   secondLang!:string
+   constructor(
+      public readonly name: string, 
+      public music:string,
+      private age: number,
+      protected lang: string = 'Typescript'
+   ) {
+      this.name = name
+      this.music = music
+      this.age = age
+      this.lang = lang
+   }
+   public getAge() {
+      return `Hello, I'm ${this.age}`
+   }
 }
 
-let myVal: string = addOrConcat(2,3,'concat') as string
+const Dave = new Coder('Dave', 'Rock', 42 )
+console.log(Dave.getAge())
+// console.log(Dave.age)
+// console.log(Dave.lang)
 
-// Be careful! TS sees no problem  - but a string is returned
-let nextVal: number = addOrConcat(2,2,'concat') as number
 
-// 10 as string
-(10 as unknown) as string
+class WebDev extends Coder {
+   constructor(
+      public computer: string,
+      name: string,
+      music: string,
+      age: number,
+   ){
+      super(name, music, age)
+      this.computer = computer
+   }
+   public getLang(){
+      return `I write ${this.lang}`
+   }
 
-//The DOM
+}
 
-const img = document.querySelector('img')!
+const Sara = new WebDev('Mac', 'Sara', 'Lofi', 25)
+console.log(Sara.getLang())
+// console.log(Sara.age)
+// console.log(Sara.lang)
+//////////////////////////////////////////////////////////
 
-const myImg = document.getElementById('#img') as HTMLImageElement   // The ! is a non-null asserrtion that can be used to tell typescript that this is not null
-const nextImg = document.getElementById('#img')
-img.src
-myImg.src 
+interface Musician {
+   name: string,
+   instrument: string,
+   play(action: string): string
+}
+
+class Guitarist implements Musician {
+   name: string
+   instrument: string
+
+   constructor(name: string, instrument:string) {
+      this.name = name
+      this.instrument = instrument
+   }
+
+   play(action: string) {
+      return `${this.name} ${action} the ${this.instrument}`
+
+   }
+}
+const Page = new Guitarist('Jimmy', 'guitar')
+console.log(Page.play('strums'))
+
+class Peeps {
+   static count: number = 0 
+
+   getCount(): number {
+      return Peeps.count
+   }
+   public id: number
+
+   constructor(public name: string) {
+      this.name = name
+      this.id = ++Peeps.count
+   }
+}
+
+const John = new Peeps('John')
+const Steve = new Peeps('Steve')
+const Amy = new Peeps('Amy')
+
+console.log(Amy.id)
+console.log(Steve.id)
+console.log(John.id)
+console.log(Peeps.count)
+
+////////////////////////////////
+class Bands{
+   private dataState: string[]
+   constructor(){
+      this.dataState = []
+   }
+   public get data(): string[]{
+      return this.dataState
+   }
+
+   public set data(value: string[]){
+      if (Array.isArray(value) && value.every(el => typeof el === 'string')){
+         this.dataState = value
+         return   //return is empty because setters cannot return a value in TS
+      } else throw Error('Params is not array of strings')
+   }
+}
+
+const MyBands = new Bands()
+MyBands.data = ['Neil Young', 'Led Zep']
+console.log(MyBands.data)
+MyBands.data = [...MyBands.data, 'ZZ Top']
+console.log(MyBands.data)
+MyBands.data =  ['Van Halen', 4434] //4434 cannot be added to the array because the contents have been defined to be string array
