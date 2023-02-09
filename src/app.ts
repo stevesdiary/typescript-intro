@@ -1,98 +1,132 @@
-// Index Signatures, Key of Assertions & the Record Utility Type
+//Generics
 
-import { type } from "os"
+// const stringEcho = (arg: string): string => arg  // this is restricted to strings only check the next line for a generic type 
 
-// interface TransactionObj {
-//    readonly [index: string]: number
-// }
+const echo = <T>(arg: T): T => arg   // This works with any type 
 
-interface TransactionObj {
-   readonly [index: string]: number
-   Pizza: number,
-   Books: number,
-   Job: number
+const isObj = <T>(arg: T): boolean => {
+   return (typeof arg === 'object' && !Array.isArray(arg) && arg !== null)
+
 }
 
-const todaysTransactions: TransactionObj = {
-   Pizza: -10,
-   Books: -5,
-   Job: 50
-}
+console.log(isObj(true))
+console.log(isObj('John'))
+console.log(isObj([1, 2, 3]))
+console.log(isObj({ name: 'John'}))
+console.log(isObj(null))
 
-console.log(todaysTransactions.Pizza)
-console.log(todaysTransactions['Pizza'])
+//Generic type is very effective when your function has to do some logic
 
-
-
-//Dynamically accessing properties
-
-let prop: string = 'Pizza'
-console.log(todaysTransactions[prop])
-
-const todaysNet = (transactions: TransactionObj): number => {
-   let total = 0 
-   for (const transaction in transactions) {
-      total += transactions[transaction]
+const isTrue = <T>(arg: T): { arg: T, is: boolean } => {
+   if (Array.isArray(arg)&& !arg.length) {
+      return {arg, is: false }
    }
-   return total
+   if (isObj(arg)&& !Object.keys(arg as keyof T).length){
+      return {arg, is: false }
+   }
+   return { arg, is: !!arg}     // (!!arg) is used to flip 0 & 1 to true or false
 }
 
-console.log(todaysNet(todaysTransactions))
+console.log(isTrue(false))
+console.log(isTrue(0))
+console.log(isTrue(true))
+console.log(isTrue(1))
+console.log(isTrue('Dave'))
+console.log(isTrue(' '))
+console.log(isTrue(null))
+console.log(isTrue(undefined))
+console.log(isTrue({})) //modified
+console.log(isTrue({ name: 'John' }))
+console.log(isTrue([]))
+console.log(isTrue([1, 2, 3]))
+console.log(isTrue(NaN))
+console.log(isTrue(-0))
 
-// todaysTransactions.Pizza = 40
-
-console.log(todaysTransactions['Dave'])
-
-
-//////////////////////////////////////
-
-interface Student {
-   // [key: string]: string | number | number[] | undefined
-   name: string,
-   GPA: number,
-   classes?: number[]
+interface BoolCheck<T> {
+   value: T,
+   is: boolean,
 }
 
-const student: Student = {
-   name: "Sam",
-   GPA: 3.5,
-   classes: [100, 200]
+
+
+const checkBoolValue = <T>(arg: T):BoolCheck<T> => {
+   if (Array.isArray(arg)&& !arg.length) {
+      return {value: arg, is: false }
+   }
+   if (isObj(arg)&& !Object.keys(arg as keyof T).length){
+      return {value: arg, is: false }
+   }
+   return { value: arg, is: !!arg}     // (!!arg) is used to flip 0 & 1 to true or false
 }
 
-// console.log(student.test)
 
-for (const key in student) {
-   console.log(`${key}: ${student[key as keyof Student]}`)
+//Another Example
+
+interface HasID{
+   id: number
 }
 
-Object.keys(student).map(key => {
-   console.log(student[key as  keyof typeof student])
-})
-
-const logStudentKey = (student: Student, key: keyof Student): void => {
-   console.log(`Student ${key}: ${student[key]}`)
+const processUser = <T extends HasID>(user: T): T => {
+   //process the user with logic here
+   return user
 }
 
-logStudentKey(student, 'GPA')
+console.log(processUser({id: 1, name: 'Dave'}))
+// console.log(processUser({name: 'Dave'}))
 
-
-////////////////////////////////////////////
-
-// interface Incomes {
-//    [key: string]: number
-// }
-//this can also be written as: follows
-
-type Streams = 'salary' | 'bonus' | 'extra'
-
-type Incomes = Record<Streams, number | string>
-
-const monthlyIncomes: Incomes = {
-   salary: 5000,
-   bonus: 100,
-   extra: 250
+const getUsersProperty = <T extends HasID, K extends keyof T>(users: T[], key: K): T[K][] => {
+   return users.map(user => user[key])
 }
 
-for (const revenue in monthlyIncomes) {
-   console.log(monthlyIncomes[revenue as keyof Incomes])
+const usersArray = [
+   {
+      'id': 1,
+      'name': 'Leanne Graham',
+      'username': 'Bret',
+      'email': 'upchh@example.com',
+      'address': {
+         'street': 'Kulas Light',
+         'suite': 'Apt. 556',
+         'city': 'Gwenborough',
+         'zipcode': '92998-3874',
+         'geo': {
+            'lat': '-37.3159',
+            'lng': '81.1496'
+         }
+      },
+      'phone': '1-800-555-1212',
+      'website': 'hildegard.org',
+      'company': {
+         'name': 'Romaguera-Crona',
+         'catchPhrase': 'Multi-layered client-server neural-net',
+         'bs': 'harness real-time e-markets'
+      }
+   },
+]
+
+console.log(getUsersProperty(usersArray, 'email'))
+console.log(getUsersProperty(usersArray, 'username'))
+
+class StateObject<T> {
+   private data: T;
+
+   constructor(value: T) {
+      this.data = value
+   }
+   get state(): T {
+      return this.data
+   }
+
+   set state(value: T) {
+      this.data = value
+   }
 }
+
+const store = new StateObject("John")
+console.log(store.state)
+store.state = "Dave"
+//store.state = 12  // Typescript has inferred the type to be string since we have assigned "John" to it first 
+
+const myState = new StateObject<(string | number | boolean)[]>([15]) 
+myState.state = (['Dave', 25, true])
+console.log(myState.state)
